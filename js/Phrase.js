@@ -30,26 +30,17 @@ class Phrase  {
     }
 
 
-    checkLetter(btn) {
+    checkLetter(listLi,btn) {
 
-        const listLi = document.querySelectorAll('li.letter');
+        return listLi.textContent.toLowerCase() === btn.textContent
         
-        return this.showMatchedLetter(listLi,btn);
+    
     }
     
 
-    showMatchedLetter(listLi,btn){
-        let letter = null;
-        for(let i = 0; i < listLi.length; i++){
-            if(listLi[i].textContent.toLowerCase() === btn.textContent){
-                listLi[i].className = 'letter show';
-                letter = btn.textContent;
-                
-            }
-        }
-
-        return letter;
-
+    showMatchedLetter(listLi){
+    
+    listLi.className = 'letter show';
     }
 }
 

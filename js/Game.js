@@ -6,7 +6,7 @@
 class Game  {
     constructor(){
         this.missed = 0;
-        this.phrases = ['The best of both worlds', 'Speak of the devil', 'See eye to eye', 'To kill two birds with one stone', 'Once in a blue moon' ];
+        this.phrases = [new Phrase('The best of both worlds'),new Phrase( 'Speak of the devil'), new Phrase('See eye to eye'), new Phrase('To kill two birds with one stone'), new Phrase('Once in a blue moon') ];
         this.activePhrase = null;
         this.scoreBorad = document.querySelectorAll('img');
     }
@@ -18,7 +18,7 @@ class Game  {
         const overlay = document.querySelector('#overlay');  
         overlay.style.display = "none";
         const randomP = this.getRandomPhrase();
-        this.activePhrase= new Phrase(randomP);
+        this.activePhrase= randomP;
         this.activePhrase.addPhraseToDisplay();
     }
 
@@ -30,7 +30,7 @@ class Game  {
         }
         //this.missed = 0;
     
-        const keybordPush = qwerty.querySelectorAll('.chosen');
+        const keybordPush = qwerty.querySelectorAll('button');
     
         for(let i = 0; i<keybordPush.length; i++ ){
             
@@ -49,18 +49,32 @@ class Game  {
 
     handleInteraction(e){
 
-        let letterFound;
+        var letter = 0;
+        var button;
 
         if(e.target.tagName === 'BUTTON'){
-            const button = e.target;
+            button = e.target;
             button.className = 'chosen';
             button.disabled = true;
 
-            letterFound = this.activePhrase.checkLetter(button); 
-        }
+            const listLi = document.querySelectorAll('li.letter');
+            
 
-        if(letterFound === null){
+            for(let i = 0; i < listLi.length; i++){
+               
+                if(this.activePhrase.checkLetter(listLi[i],e.target)){
+                    letter ++;
+                    this.activePhrase.showMatchedLetter(listLi[i])
+                }
+                
+            }
+   
+        }
+        console.log(letter)
+
+        if(letter===0){
             this.removeLife()
+            button.className = 'wrong';
         }
 
         this.checkWin ();
@@ -72,7 +86,9 @@ class Game  {
     removeLife(){
         this.scoreBorad[this.missed].src='images/lostHeart.png';
         this.missed ++;
-
+        if(this.missed >= 5){
+            this.gameOver("lose","You have lost!");
+        }
     }
 
      checkWin (){
@@ -92,8 +108,6 @@ class Game  {
         
         if(show === letter){
             this.gameOver("win","You have won!");
-        }else if(this.missed >= 5){
-            this.gameOver("lose","You have lost!");
         }
 
     }
